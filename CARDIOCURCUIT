@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cardio Circuit Workout</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e2f;
+      color: #fff;
+      margin: 0;
+      text-align: center;
+    }
+    header {
+      background: #ff4d4d;
+      padding: 20px;
+      font-size: 24px;
+    }
+    .workout {
+      margin: 40px auto;
+      max-width: 500px;
+      background: #29293d;
+      padding: 30px;
+      border-radius: 10px;
+    }
+    #exercise {
+      font-size: 32px;
+      margin: 20px 0;
+    }
+    #timer {
+      font-size: 50px;
+      margin: 20px 0;
+    }
+    button {
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #e63939;
+    }
+    .next-up {
+      margin-top: 15px;
+      font-size: 18px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <header>Home Cardio Circuit</header>
+  <div class="workout">
+    <h2 id="status">Get Ready!</h2>
+    <div id="exercise">Press Start</div>
+    <div id="timer">00</div>
+    <div class="next-up" id="next"></div>
+    <button onclick="startWorkout()">▶ Start Workout</button>
+  </div>
+
+  <script>
+    const workout = [
+      { name: "Jumping Jacks", time: 30 },
+      { name: "High Knees", time: 30 },
+      { name: "Squat Jumps", time: 30 },
+      { name: "Mountain Climbers", time: 30 },
+      { name: "Rest", time: 20 }
+    ];
+
+    let round = 1;
+    let index = 0;
+    let timerInterval;
+
+    function startWorkout() {
+      round = 1;
+      index = 0;
+      document.querySelector("button").disabled = true;
+      runExercise();
+    }
+
+    function runExercise() {
+      if (round > 3) {
+        document.getElementById("status").textContent = "Workout Complete 🎉";
+        document.getElementById("exercise").textContent = "Great Job!";
+        document.getElementById("timer").textContent = "";
+        document.getElementById("next").textContent = "";
+        document.querySelector("button").disabled = false;
+        return;
+      }
+
+      const current = workout[index];
+      document.getElementById("status").textContent = `Round ${round} of 3`;
+      document.getElementById("exercise").textContent = current.name;
+      document.getElementById("timer").textContent = current.time;
+
+      // Show next exercise
+      const nextExercise = workout[index + 1] || (round < 3 ? "Start Round " + (round+1) : "Finish");
+      document.getElementById("next").textContent = `Next: ${nextExercise.name || nextExercise}`;
+
+      let timeLeft = current.time;
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").textContent = timeLeft;
+        if (timeLeft < 0) {
+          clearInterval(timerInterval);
+          index++;
+          if (index >= workout.length) {
+            index = 0;
+            round++;
+          }
+          runExercise();
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
